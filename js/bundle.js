@@ -154,6 +154,7 @@
 	    hitSpot = ball.y - paddleRight.y
 	    if (hitSpot > -10 && hitSpot < 110) {
 	      ball.dx = -ball.dx;
+	      ball.ddy = 0;
 	      ball.dx -= .5
 	    }
 	    if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -5}
@@ -296,6 +297,7 @@
 	}
 	
 	function drawGamePieces() {
+	  c.fillStyle = "#ffffff";
 	  drawBall(ball);
 	  c.fillStyle = "#DAF8BC";
 	  drawPaddle(paddleLeft);
@@ -306,21 +308,25 @@
 	
 	  this.x = x + Math.random() * 16 - 8;
 	  this.y = y + Math.random() * 16 - 8;
-	  this.dx = Math.random() * ddy * 100;
-	  this.dy = Math.random() * ddy * 100;
-	  this.r = 2;
+	  this.dx = (Math.random() * 100 - 50) * Math.abs(ddy);
+	  this.dy = (Math.random() * 100 - 50) * Math.abs(ddy);
+	  this.r = 3;
 	  this.opacity = 2;
 	  this.timeLeft = 2;
+	  this.redness = 255 - Math.abs(ddy) * 10000;
+	  if (this.redness < 0) {this.redness = 0}
 	
 	  this.update = function() {
 	    this.x += this.dx;
 	    this.y += this.dy;
-	    this.r -= .02;
+	    this.r -= .14;
 	    this.opacity -= .1;
+	    this.redness += 25;
+	    if (this.redness > 255) {this.redness = 255}
 	
 	    c.beginPath();
 	    c.fillStyle = "#ffffff";
-	    c.fillStyle = 'rgba(255,255,255,' + this.opacity + ')';
+	    c.fillStyle = 'rgba(255,' + this.redness + ',' + this.redness +',' + this.opacity + ')';
 	
 	    c.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
 	    c.fill();
@@ -361,9 +367,9 @@
 	  moveBall(ball);
 	  moveLeftPaddle(mouseSpeed);
 	  moveRightPaddle();
-	  drawGamePieces();
 	  addParticle();
 	  drawParticles();
+	  drawGamePieces();
 	  console.log(particles);
 	
 	  lastMouseY = mouse.y;
