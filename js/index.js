@@ -15,7 +15,7 @@ var score = {
   right: 0
 }
 
-hmargin = ((canvas.width - field.width) / 2);
+leftMargin = ((canvas.width - field.width) / 2);
 
 var mouse = {
   x: canvas.width / 2,
@@ -33,9 +33,7 @@ function currentSpeed(speeds){
   for (var i = 0; i < speeds.length; i++) {
     total += speeds[i];
   }
-  console.log(speeds);
-  console.log(total);
-  return total / 5;
+  return total;
 }
 
 var ball = {
@@ -48,7 +46,7 @@ var ball = {
 }
 
 function resetBall(){
-  ball.x = 500;
+  ball.x = leftMargin + 600;
   ball.y = 400;
   ball.dx = -3;
   ball.dy = 0;
@@ -58,24 +56,17 @@ function resetBall(){
 var paddleLeft = {
   height: 100,
   width: 10,
-  x: hmargin + 10,
+  x: leftMargin + 10,
   y: 100 + field.height / 2
 }
 
 var paddleRight = {
   height: 100,
   width: 10,
-  x: hmargin + field.width - 20,
+  x: leftMargin + field.width - 20,
   y: 100 + field.height / 2
 }
 
-function drawPaddle(paddle) {
-  c.beginPath();
-  c.fillStyle = "green";
-  c.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-  c.fill();
-  c.closePath();
-}
 
 function moveLeftPaddle(dy) {
   paddleLeft.y += dy
@@ -92,12 +83,12 @@ function moveRightPaddle() {
 
 function paddleHit(mouseSpeed) {
   var hitSpot = 0;
-  if (ball.x + ball.dx < hmargin + 30) {
+  if (ball.x + ball.dx < leftMargin + 30) {
     hitSpot = ball.y - paddleLeft.y
     if (hitSpot > -10 && hitSpot < 110) {
       ball.dx = -ball.dx;
       ball.dx += .5
-      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 200;
+      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 1000;
     }
     if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -5}
     if (hitSpot > 0 && hitSpot <= 11) { ball.dy = -4}
@@ -112,7 +103,7 @@ function paddleHit(mouseSpeed) {
     if (hitSpot > 100 && hitSpot < 59) { ball.dy = 5}
     if (ball.ddy > 0) { ball.dy = 0 }
   }
-  if (ball.x + ball.dx > hmargin + field.width - 30) {
+  if (ball.x + ball.dx > leftMargin + field.width - 30) {
     hitSpot = ball.y - paddleRight.y
     if (hitSpot > -10 && hitSpot < 110) {
       ball.dx = -ball.dx;
@@ -140,7 +131,7 @@ var mouseSpeed = 0;
 window.addEventListener("resize", function(){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  hmargin = ((canvas.width - field.width) / 2);
+  leftMargin = ((canvas.width - field.width) / 2);
 })
 
 window.addEventListener("mousemove", function(e){
@@ -148,24 +139,30 @@ window.addEventListener("mousemove", function(e){
   mouse.y = e.clientY;
 })
 
-function draw(text) {
+function showSpin(text) {
   c.font = "48px serif";
-  c.fillStyle = "#000000";
+  c.fillStyle = "#ffffff";
   c.fillText(text, 10, 50);
 }
 
 function showScore(){
   c.font = "48px serif";
-  c.fillStyle = "#000000";
-  c.fillText(score.left, hmargin + 300, 50);
-  c.fillText(score.right, hmargin + 500, 50);
+  c.fillStyle = "#ffffff";
+  c.fillText(score.left, leftMargin + 300, 50);
+  c.fillText(score.right, leftMargin + 500, 50);
 
 }
 
 function drawBall(ball){
   c.beginPath();
   c.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2, false);
-  c.fillStyle = "green";
+  c.fill();
+  c.closePath();
+}
+
+function drawPaddle(paddle) {
+  c.beginPath();
+  c.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
   c.fill();
   c.closePath();
 }
@@ -227,11 +224,11 @@ function moveBall(ball) {
 
 
   // endzone hit
-  if (ball.x + ball.dx < hmargin + ball.radius) {
+  if (ball.x + ball.dx < leftMargin + ball.radius) {
     resetBall();
     score.right += 1;
   }
-  if (ball.x + ball.dx > hmargin + field.width - ball.radius) {
+  if (ball.x + ball.dx > leftMargin + field.width - ball.radius) {
     resetBall();
     score.left += 1;
   }
@@ -241,31 +238,42 @@ function moveBall(ball) {
   ball.y += ball.dy;
 }
 
-function gameField(){
-  c.strokeStyle = "green";
-  var hmargin = (canvas.width - field.width) / 2
-  c.strokeRect(hmargin, 100, field.width, field.height);
+function drawGameField(){
+  c.fillStyle = "#000000";
+  c.fillRect(0,0, 10000, canvas.height);
+  c.fillStyle = "green";
+  var leftMargin = (canvas.width - field.width) / 2
+  c.fillRect(leftMargin + 25, 90, field.width - 50, 10);
+  c.fillRect(leftMargin + 25, 100 + field.height, field.width - 50, 10);
+  showScore();
+  showSpin(ball.ddy);
+}
+
+function drawGamePieces() {
+  drawBall(ball);
+  c.fillStyle = "#DAF8BC";
+  drawPaddle(paddleLeft);
+  drawPaddle(paddleRight);
 }
 
 function animate(){
   clearTimeout(animate);
   setTimeout(animate, 10);
-  c.fillStyle = "#ffffff";
-  c.fillRect(0,0, 10000, canvas.height);
-  gameField();
+
+  drawGameField();
+
   mouseSpeed = mouse.y - lastMouseY;
   addSpeed(mouseSpeed);
+
   paddleHit(currentSpeed(mouse.speeds));
-  drawBall(ball);
   moveBall(ball);
   moveLeftPaddle(mouseSpeed);
   moveRightPaddle();
-  showScore();
-  drawPaddle(paddleLeft);
-  drawPaddle(paddleRight);
+  drawGamePieces();
+
   lastMouseY = mouse.y;
 
-  draw(ball.ddy);
+
 }
 
 animate();
