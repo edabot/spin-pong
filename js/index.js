@@ -1,3 +1,4 @@
+
 var canvas = document.querySelector("canvas");
 var c = canvas.getContext('2d');
 
@@ -13,13 +14,29 @@ hmargin = ((canvas.width - field.width) / 2);
 
 var mouse = {
   x: canvas.width / 2,
-  y: canvas.height / 2
+  y: canvas.height / 2,
+  speeds: [0,0,0,0,0]
+}
+
+function addSpeed(speed){
+  mouse.speeds.unshift(speed);
+  mouse.speeds.pop();
+}
+
+function currentSpeed(speeds){
+  var total = 0;
+  for (var i = 0; i < speeds.length; i++) {
+    total += speeds[i];
+  }
+  console.log(speeds);
+  console.log(total);
+  return total / 5;
 }
 
 var ball = {
-  x: 400,
+  x: 500,
   y: 300,
-  dx: -2,
+  dx: -3,
   dy: 0,
   ddx: 0,
   ddy: 0,
@@ -68,7 +85,7 @@ function paddleHit(mouseSpeed) {
     hitSpot = ball.y - paddleLeft.y
     if (hitSpot > -10 && hitSpot < 110) {
       ball.dx = -ball.dx;
-      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 1000;
+      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 500;
       console.log(ball.ddy);
     }
     if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -2.5}
@@ -195,7 +212,8 @@ function animate(){
   c.fillRect(0,0, 10000, canvas.height);
   gameField();
   mouseSpeed = mouse.y - lastMouseY;
-  paddleHit(mouseSpeed);
+  addSpeed(mouseSpeed);
+  paddleHit(currentSpeed(mouse.speeds));
   drawBall(ball);
   moveBall(ball);
   moveLeftPaddle(mouseSpeed);
