@@ -1,40 +1,40 @@
 
-const Paddle = function(x){
-  this.x = x;
-  this.y = 400;
-  this.height = 100;
-  this.width = 10;
+var paddleLeft = {
+  height: 100,
+  width: 10,
+  x: leftMargin + 10,
+  y: 100 + field.height / 2
 }
 
-Paddle.prototype.draw(paddle) {
-  c.beginPath();
-  c.fillStyle = "green";
-  c.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-  c.fill();
-  c.closePath();
+var paddleRight = {
+  height: 100,
+  width: 10,
+  x: leftMargin + field.width - 20,
+  y: 100 + field.height / 2
 }
 
- Paddle.prototype.handleMove = function(height, dy) {
-  this.y += dy
-  if (this.y < 0) { this.y = 0 }
-  if (this.y > height + 100) { this.y = height + 100}
+function moveLeftPaddle(dy) {
+  paddleLeft.y += dy
+  if (paddleLeft.y < 0) { paddleLeft.y = 0 }
+  if (paddleLeft.y > field.height + 100) { paddleLeft.y = field.height + 100}
 }
 
-Paddle.prototype.chaseBall(ball) {
+function moveRightPaddle() {
   if (ball.y > paddleRight.y + 50) { paddleRight.y += 3 }
   if (ball.y < paddleRight.y + 50) { paddleRight.y -= 3 }
   if (paddleRight.y < 100) { paddleRight.y = 100 }
   if (paddleRight.y > field.height) { paddleRight.y = field.height}
 }
 
+
 function paddleHit(mouseSpeed) {
   var hitSpot = 0;
-  if (ball.x + ball.dx < hmargin + 30) {
+  if (ball.x + ball.dx < leftMargin + 30) {
     hitSpot = ball.y - paddleLeft.y
     if (hitSpot > -10 && hitSpot < 110) {
       ball.dx = -ball.dx;
       ball.dx += .5
-      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 200;
+      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 1000;
     }
     if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -5}
     if (hitSpot > 0 && hitSpot <= 11) { ball.dy = -4}
@@ -49,7 +49,7 @@ function paddleHit(mouseSpeed) {
     if (hitSpot > 100 && hitSpot < 59) { ball.dy = 5}
     if (ball.ddy > 0) { ball.dy = 0 }
   }
-  if (ball.x + ball.dx > hmargin + field.width - 30) {
+  if (ball.x + ball.dx > leftMargin + field.width - 30) {
     hitSpot = ball.y - paddleRight.y
     if (hitSpot > -10 && hitSpot < 110) {
       ball.dx = -ball.dx;

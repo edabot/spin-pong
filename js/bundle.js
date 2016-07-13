@@ -61,6 +61,8 @@
 	  right: 0
 	}
 	
+	var particles = [];
+	
 	leftMargin = ((canvas.width - field.width) / 2);
 	
 	var mouse = {
@@ -112,7 +114,6 @@
 	  x: leftMargin + field.width - 20,
 	  y: 100 + field.height / 2
 	}
-	
 	
 	function moveLeftPaddle(dy) {
 	  paddleLeft.y += dy
@@ -196,7 +197,6 @@
 	  c.fillStyle = "#ffffff";
 	  c.fillText(score.left, leftMargin + 300, 50);
 	  c.fillText(score.right, leftMargin + 500, 50);
-	
 	}
 	
 	function drawBall(ball){
@@ -302,6 +302,52 @@
 	  drawPaddle(paddleRight);
 	}
 	
+	function Particle(x, y, dx, dy, r, ddy) {
+	
+	  this.x = x + Math.random() * 16 - 8;
+	  this.y = y + Math.random() * 16 - 8;
+	  this.dx = Math.random() * ddy * 100;
+	  this.dy = Math.random() * ddy * 100;
+	  this.r = 2;
+	  this.opacity = 2;
+	  this.timeLeft = 2;
+	
+	  this.update = function() {
+	    this.x += this.dx;
+	    this.y += this.dy;
+	    this.r -= .02;
+	    this.opacity -= .1;
+	
+	    c.beginPath();
+	    c.fillStyle = "#ffffff";
+	    c.fillStyle = 'rgba(255,255,255,' + this.opacity + ')';
+	
+	    c.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+	    c.fill();
+	    c.closePath();
+	
+	    this.timeLeft -= .1;
+	  }
+	
+	  this.remove = function() {
+	    return this.timeLeft <= 0;
+	  }
+	}
+	
+	function addParticle() {
+	  particles.push(new Particle(ball.x, ball.y, 0, 0, 5, ball.ddy));
+	}
+	
+	function drawParticles(){
+	  for (var i = 0; i < particles.length; i++) {
+	    particles[i].update();
+	    if (particles[i].remove() === true) {
+	      particles.splice(i, 1);
+	    }
+	  }
+	}
+	
+	
 	function animate(){
 	  clearTimeout(animate);
 	  setTimeout(animate, 10);
@@ -316,6 +362,9 @@
 	  moveLeftPaddle(mouseSpeed);
 	  moveRightPaddle();
 	  drawGamePieces();
+	  addParticle();
+	  drawParticles();
+	  console.log(particles);
 	
 	  lastMouseY = mouse.y;
 	
