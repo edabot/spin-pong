@@ -81,12 +81,11 @@ function moveRightPaddle() {
 function paddleHit(mouseSpeed) {
   var hitSpot = 0;
   if (ball.x + ball.dx < hmargin + 30) {
-    console.log("hit");
     hitSpot = ball.y - paddleLeft.y
     if (hitSpot > -10 && hitSpot < 110) {
       ball.dx = -ball.dx;
-      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 500;
-      console.log(ball.ddy);
+      ball.dx += .2
+      if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 200;
     }
     if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -2.5}
     if (hitSpot > 0 && hitSpot <= 11) { ball.dy = -2}
