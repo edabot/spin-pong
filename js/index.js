@@ -2,13 +2,17 @@
 var canvas = document.querySelector("canvas");
 var c = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = 900;
+canvas.height = 700;
 
 var field = {
   width: 800,
   height: 500
 }
+
+leftMargin = 50;
+topMargin = 100;
+paddleHeight = 100;
 
 var score = {
   left: 0,
@@ -16,8 +20,6 @@ var score = {
 }
 
 var particles = [];
-
-leftMargin = ((canvas.width - field.width) / 2);
 
 var mouse = {
   x: canvas.width / 2,
@@ -39,31 +41,31 @@ function currentSpeed(speeds){
 }
 
 var ball = {
-  x: 500,
-  y: 300,
-  dx: -3,
-  dy: 0,
+  x: leftMargin + 200,
+  y: 350,
+  dx: 3,
+  dy: Math.random() * 2 - 1,
   ddy: 0,
   radius: 10
 }
 
 function resetBall(){
-  ball.x = leftMargin + 600;
-  ball.y = 400;
-  ball.dx = -3;
-  ball.dy = 0;
+  ball.x = leftMargin + 200;
+  ball.y = 350;
+  ball.dx = 3;
+  ball.dy = Math.random() * 2 - 1;
   ball.ddy = 0;
 }
 
 var paddleLeft = {
-  height: 100,
+  height: paddleHeight,
   width: 10,
   x: leftMargin + 10,
   y: 100 + field.height / 2
 }
 
 var paddleRight = {
-  height: 100,
+  height: paddleHeight,
   width: 10,
   x: leftMargin + field.width - 20,
   y: 100 + field.height / 2
@@ -72,21 +74,23 @@ var paddleRight = {
 function moveLeftPaddle(dy) {
   paddleLeft.y += dy
   if (paddleLeft.y < 0) { paddleLeft.y = 0 }
-  if (paddleLeft.y > field.height + 100) { paddleLeft.y = field.height + 100}
+  if (paddleLeft.y > field.height + paddleHeight) { paddleLeft.y = field.height + paddleHeight}
 }
 
 function moveRightPaddle() {
   if (ball.y > paddleRight.y + 50) { paddleRight.y += 3 }
   if (ball.y < paddleRight.y + 50) { paddleRight.y -= 3 }
   if (paddleRight.y < 100) { paddleRight.y = 100 }
-  if (paddleRight.y > field.height) { paddleRight.y = field.height}
+  if (paddleRight.y > field.height + 100) { paddleRight.y = field.height + 100}
 }
 
 function paddleHit(mouseSpeed) {
   var hitSpot = 0;
-  if (ball.x + ball.dx < leftMargin + 30) {
-    hitSpot = ball.y - paddleLeft.y
+  if (ball.x + ball.dx < leftMargin + 30 - ball.dx &&
+      ball.x + ball.dx > leftMargin + 20) {
+      hitSpot = ball.y - paddleLeft.y
     if (hitSpot > -10 && hitSpot < 110) {
+      ball.x = leftMargin + 40
       ball.dx = -ball.dx;
       ball.dx += .5
       if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 1000;
@@ -104,24 +108,16 @@ function paddleHit(mouseSpeed) {
     if (hitSpot > 100 && hitSpot < 59) { ball.dy = 5}
     if (ball.ddy > 0) { ball.dy = 0 }
   }
-  if (ball.x + ball.dx > leftMargin + field.width - 30) {
+  if (ball.x + ball.dx > leftMargin + field.width - 30 - ball.dx  &&
+      ball.x + ball.dx < leftMargin + field.width - 15) {
+
     hitSpot = ball.y - paddleRight.y
     if (hitSpot > -10 && hitSpot < 110) {
-      ball.dx = -ball.dx;
+      ball.x = leftMargin + field.width - 30
+
+      ball.dx = -ball.dx - .5;
       ball.ddy = 0;
-      ball.dx -= .5
     }
-    if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -5}
-    if (hitSpot > 0 && hitSpot <= 11) { ball.dy = -4}
-    if (hitSpot > 11 && hitSpot <= 22) { ball.dy = -3}
-    if (hitSpot > 22 && hitSpot <= 33) { ball.dy = -2}
-    if (hitSpot > 33 && hitSpot <= 45) { ball.dy = -1}
-    if (hitSpot > 45 && hitSpot <= 55) { ball.dy = 0}
-    if (hitSpot > 55 && hitSpot <= 66) { ball.dy = 1}
-    if (hitSpot > 66 && hitSpot <= 77) { ball.dy = 2}
-    if (hitSpot > 77 && hitSpot <= 88) { ball.dy = 3}
-    if (hitSpot > 88 && hitSpot <= 100) { ball.dy = 4}
-    if (hitSpot > 100 && hitSpot < 59) { ball.dy = 5}
     if (ball.ddy > 0) { ball.dy = 0 }
   }
 }
@@ -130,11 +126,11 @@ var lastMouseY = mouse.y;
 
 var mouseSpeed = 0;
 
-window.addEventListener("resize", function(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  leftMargin = ((canvas.width - field.width) / 2);
-})
+// window.addEventListener("resize", function(){
+//   canvas.width = window.innerWidth;
+//   canvas.height = window.innerHeight;
+//   leftMargin = ((canvas.width - field.width) / 2);
+// })
 
 window.addEventListener("mousemove", function(e){
   mouse.x = e.clientX;
@@ -148,10 +144,10 @@ function showSpin(text) {
 }
 
 function showScore(){
-  c.font = "48px serif";
-  c.fillStyle = "#ffffff";
-  c.fillText(score.left, leftMargin + 300, 50);
-  c.fillText(score.right, leftMargin + 500, 50);
+  c.font = "48px sans-serif";
+  c.fillStyle = "#d0d0d0";
+  c.fillText(score.left, leftMargin + 80, 60);
+  c.fillText(score.right, leftMargin + 695, 60);
 }
 
 function drawBall(ball){
@@ -170,54 +166,60 @@ function drawPaddle(paddle) {
 
 function moveBall(ball) {
   // ceiling hit
-  if (ball.y + ball.dy < 100 + ball.radius) {
+  if (ball.y + ball.dy < 100 + ball.radius &&
+      ball.x > leftMargin - ball.radius &&
+      ball.x < leftMargin + field.width + ball.radius) {
     ball.dy = -ball.dy;
-
     //going right
     if (ball.dx > 0) {
       if (ball.ddy > 0) {
-        ball.dy = ball.dy * (1 + ball.ddy * 3);
+        ball.dy = ball.dy * (1 + Math.abs(ball.ddy) * 3);
       }
       if (ball.ddy < 0) {
-        ball.dy = ball.dy * .8;
-        ball.dx += ball.dy * .2;
+        ball.dy -= Math.abs(ball.ddy) * 60;
+        ball.dx += Math.abs(ball.ddy) * 10;
       }
     }
     //going left
     if (ball.dx < 0) {
       if (ball.ddy < 0) {
-        ball.dy = ball.dy * (1 + ball.ddy * 3);
+        ball.dy = ball.dy * (1 + Math.abs(ball.ddy) * 3);
       }
       if (ball.ddy > 0) {
-        ball.dy = ball.dy * .8;
-        ball.dx -= ball.dy * .2;
+        ball.dy -= Math.abs(ball.ddy) * 60;
+        ball.dx += -ball.ddy * 10;
       }
     }
     ball.ddy = 0;
   }
   // floor hit
-  if (ball.y + ball.dy > 100 + field.height - ball.radius) {
+
+  if (ball.y + ball.dy > 100 + field.height - ball.radius &&
+      ball.x > leftMargin - ball.radius &&
+      ball.x < leftMargin + field.width + ball.radius) {
     ball.dy = -ball.dy;
 
     //going right
     if (ball.dx > 0) {
+      //backspin
       if (ball.ddy < 0) {
-        ball.dy = ball.dy * (1 + ball.ddy * 3);
+        ball.dy = ball.dy * (1 + Math.abs(ball.ddy) * 3);
       }
+      //forward spin
       if (ball.ddy > 0) {
-        ball.dy = ball.dy * .8;
-        ball.dx += ball.dy * .2;
+        ball.dy += Math.abs(ball.ddy) * 60;
+        ball.dx += ball.ddy * 10;
       }
     }
 
     //going left
     if (ball.dx > 0) {
       if (ball.ddy > 0) {
-        ball.dy = ball.dy * (1 + ball.ddy * 3);
+        ball.dy = ball.dy * (1 + Math.abs(ball.ddy) * 3);
       }
       if (ball.ddy < 0) {
-        ball.dy = ball.dy * .8;
-        ball.dx -= ball.dy * .2;
+        ball.dy += Math.abs(ball.ddy) * 60;
+        ball.dx += -ball.ddy * 10;
       }
     }
     ball.ddy = 0;
@@ -225,11 +227,12 @@ function moveBall(ball) {
 
 
   // endzone hit
-  if (ball.x + ball.dx < leftMargin + ball.radius) {
+  if (ball.x + ball.dx < leftMargin + ball.radius - 50) {
+    console.log(ball.dx);
     resetBall();
     score.right += 1;
   }
-  if (ball.x + ball.dx > leftMargin + field.width - ball.radius) {
+  if (ball.x + ball.dx > leftMargin + field.width - ball.radius + 50) {
     resetBall();
     score.left += 1;
   }
@@ -247,7 +250,7 @@ function drawGameField(){
   c.fillRect(leftMargin + 25, 90, field.width - 50, 10);
   c.fillRect(leftMargin + 25, 100 + field.height, field.width - 50, 10);
   showScore();
-  showSpin(ball.ddy);
+  // showSpin(ball.ddy);
 }
 
 function drawGamePieces() {
@@ -259,22 +262,37 @@ function drawGamePieces() {
 }
 
 function Particle(x, y, dx, dy, r, ddy) {
+  var angle = Math.random() * 2 * Math.PI;
+  var distance = Math.random() * 8.5
+  if (ddy !== 0) { distance = 10 }
+  this.x = x + Math.sin(angle) * distance;
+  this.y = y + Math.cos(angle) * distance;
+  this.dx = (Math.random() * 200 - 100) * Math.abs(ddy);
+  this.dy = (Math.random() * 200 - 100) * Math.abs(ddy);
 
-  this.x = x + Math.random() * 16 - 8;
-  this.y = y + Math.random() * 16 - 8;
-  this.dx = (Math.random() * 100 - 50) * Math.abs(ddy);
-  this.dy = (Math.random() * 100 - 50) * Math.abs(ddy);
-  this.r = 3;
-  this.opacity = 2;
-  this.timeLeft = 2;
+  if (ddy > 0) {
+    this.dx += dx;
+    this.dy += dy;
+  }
+
+  this.r = 2;
+  this.opacity = 1.5;
+  this.timeLeft = 4;
   this.redness = 255 - Math.abs(ddy) * 10000;
   if (this.redness < 0) {this.redness = 0}
 
   this.update = function() {
+    if (this.y + this.dy < 100 || this.y + this.dy > 100 + field.height) {
+      this.dy = -this.dy;
+    }
     this.x += this.dx;
     this.y += this.dy;
-    this.r -= .14;
-    this.opacity -= .1;
+    this.dx *= .9;
+    this.dy *= .9;
+
+    this.r -= .04;
+    this.opacity -= .04;
+    this.timeLeft -= .1;
     this.redness += 25;
     if (this.redness > 255) {this.redness = 255}
 
@@ -286,7 +304,6 @@ function Particle(x, y, dx, dy, r, ddy) {
     c.fill();
     c.closePath();
 
-    this.timeLeft -= .1;
   }
 
   this.remove = function() {
@@ -295,7 +312,9 @@ function Particle(x, y, dx, dy, r, ddy) {
 }
 
 function addParticle() {
-  particles.push(new Particle(ball.x, ball.y, 0, 0, 5, ball.ddy));
+  for (var i = 0; i < 5; i++) {
+    particles.push(new Particle(ball.x, ball.y, ball.dx, ball.dy, 5, ball.ddy));
+  }
 }
 
 function drawParticles(){
@@ -324,11 +343,37 @@ function animate(){
   addParticle();
   drawParticles();
   drawGamePieces();
-  console.log(particles);
 
   lastMouseY = mouse.y;
-
-
 }
 
 animate();
+//
+// var lastTime = null;
+//
+// animate = function(time){
+//   var timeDelta = time - lastTime;
+//   lastTime = time;
+//   clearTimeout(animate);
+//   setTimeout(animate, 10);
+//
+//   drawGameField();
+//
+//   mouseSpeed = mouse.y - lastMouseY;
+//   addSpeed(mouseSpeed);
+//
+//   paddleHit(currentSpeed(mouse.speeds));
+//   moveBall(ball);
+//   moveLeftPaddle(mouseSpeed);
+//   moveRightPaddle();
+//   addParticle();
+//   drawParticles();
+//   drawGamePieces();
+//
+//   lastMouseY = mouse.y;
+//   if (timeDelta > 10) {
+//     requestAnimationFrame(animate);
+//   }
+// };
+//
+// requestAnimationFrame(animate);
