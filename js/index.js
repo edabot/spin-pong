@@ -2,6 +2,18 @@
 var canvas = document.querySelector("canvas");
 var c = canvas.getContext('2d');
 
+var gameOn = false;
+
+// window.onload = function() {
+//     document.addEventListener('keydown', function(event) {
+//       keyDown();
+//     }, false);
+// }
+
+function keyDown() {
+  if (gameOn = false) { gameOn = true }
+}
+
 canvas.width = 900;
 canvas.height = 700;
 
@@ -237,6 +249,7 @@ function moveBall(ball) {
     score.left += 1;
   }
 
+
   ball.dy += ball.ddy;
   ball.x += ball.dx;
   ball.y += ball.dy;
@@ -275,7 +288,7 @@ function Particle(x, y, dx, dy, r, ddy) {
     this.dy += dy;
   }
 
-  this.r = 2;
+  this.r = 3;
   this.opacity = 1.5;
   this.timeLeft = 4;
   this.blueness = 255 - Math.abs(ddy) * 10000;
@@ -290,7 +303,7 @@ function Particle(x, y, dx, dy, r, ddy) {
     this.dx *= .93;
     this.dy *= .93;
 
-    this.r -= .04;
+    this.r -= .07;
     this.opacity -= .04;
     this.timeLeft -= .1;
     this.blueness += 25;
@@ -326,20 +339,42 @@ function drawParticles(){
   }
 }
 
-function game(){
+function newGame(){
   drawGameField();
   c.font = "48px sans-serif";
   c.fillStyle = "#d0d0d0";
-  c.fillText("press any key to start", leftMargin + 80, 300);
+  c.fillText("press any key to start", leftMargin + 160, 500);
+  var image = new Image();
+  image.src = "./images/spin-pong-intro.png";
+  image.onload = function(){
+       c.drawImage(image, leftMargin + 140, 120);
+  }
 
+
+  document.addEventListener('keydown', function(event) {
+    animate();
+  }, false);
 }
 
-function animate(){
-  clearTimeout(animate);
-  setTimeout(animate, 10);
-
+function gameOver(){
   drawGameField();
+  c.font = "48px sans-serif";
+  c.fillStyle = "#d0d0d0";
+  var message = "you win!"
+  if (score.right > score.left) { message = "you lost"}
+  c.fillText(message, leftMargin + 280, 200);
+  c.fillText("press any key to play again", leftMargin + 100, 330);
+  console.log(message);
+  document.addEventListener('keydown', function(event) {
+    score.left = 0;
+    score.right = 0;
+    animate();
+  }, false);
+}
 
+
+function animate(){
+  drawGameField();
   mouseSpeed = mouse.y - lastMouseY;
   addSpeed(mouseSpeed);
 
@@ -352,9 +387,17 @@ function animate(){
   drawGamePieces();
 
   lastMouseY = mouse.y;
+
+  if (score.left >= 7 || score.right >= 7) {
+    gameOver();
+  } else {
+    clearTimeout(animate);
+    setTimeout(animate, 10);
+  }
 }
 
-animate();
+newGame();
+// animate();
 //
 // var lastTime = null;
 //
