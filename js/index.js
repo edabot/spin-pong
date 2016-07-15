@@ -78,8 +78,8 @@ function moveLeftPaddle(dy) {
 }
 
 function moveRightPaddle() {
-  if (ball.y > paddleRight.y + 50) { paddleRight.y += 3 }
-  if (ball.y < paddleRight.y + 50) { paddleRight.y -= 3 }
+  if (ball.y > paddleRight.y + 50) { paddleRight.y += 2.5 }
+  if (ball.y < paddleRight.y + 50) { paddleRight.y -= 2.5 }
   if (paddleRight.y < 100) { paddleRight.y = 100 }
   if (paddleRight.y > field.height + 100) { paddleRight.y = field.height + 100}
 }
