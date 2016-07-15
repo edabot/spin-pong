@@ -95,17 +95,17 @@ function paddleHit(mouseSpeed) {
       ball.dx += .5
       if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 1000;
     }
-    if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -5}
-    if (hitSpot > 0 && hitSpot <= 11) { ball.dy = -4}
+    if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -4}
+    if (hitSpot > 0 && hitSpot <= 11) { ball.dy = -3.5}
     if (hitSpot > 11 && hitSpot <= 22) { ball.dy = -3}
     if (hitSpot > 22 && hitSpot <= 33) { ball.dy = -2}
-    if (hitSpot > 33 && hitSpot <= 45) { ball.dy = -1}
-    if (hitSpot > 45 && hitSpot <= 55) { ball.dy = 0}
-    if (hitSpot > 55 && hitSpot <= 66) { ball.dy = 1}
+    if (hitSpot > 33 && hitSpot <= 49) { ball.dy = -1}
+    if (hitSpot > 49 && hitSpot <= 51) { ball.dy = 0}
+    if (hitSpot > 51 && hitSpot <= 66) { ball.dy = 1}
     if (hitSpot > 66 && hitSpot <= 77) { ball.dy = 2}
     if (hitSpot > 77 && hitSpot <= 88) { ball.dy = 3}
-    if (hitSpot > 88 && hitSpot <= 100) { ball.dy = 4}
-    if (hitSpot > 100 && hitSpot < 59) { ball.dy = 5}
+    if (hitSpot > 88 && hitSpot <= 100) { ball.dy = 3.5}
+    if (hitSpot > 100 && hitSpot < 59) { ball.dy = 4}
     if (ball.ddy > 0) { ball.dy = 0 }
   }
   if (ball.x + ball.dx > leftMargin + field.width - 30 - ball.dx  &&
@@ -278,8 +278,8 @@ function Particle(x, y, dx, dy, r, ddy) {
   this.r = 2;
   this.opacity = 1.5;
   this.timeLeft = 4;
-  this.redness = 255 - Math.abs(ddy) * 10000;
-  if (this.redness < 0) {this.redness = 0}
+  this.blueness = 255 - Math.abs(ddy) * 10000;
+  if (this.blueness < 0) {this.blueness = 0}
 
   this.update = function() {
     if (this.y + this.dy < 100 || this.y + this.dy > 100 + field.height) {
@@ -287,18 +287,18 @@ function Particle(x, y, dx, dy, r, ddy) {
     }
     this.x += this.dx;
     this.y += this.dy;
-    this.dx *= .9;
-    this.dy *= .9;
+    this.dx *= .93;
+    this.dy *= .93;
 
     this.r -= .04;
     this.opacity -= .04;
     this.timeLeft -= .1;
-    this.redness += 25;
-    if (this.redness > 255) {this.redness = 255}
+    this.blueness += 25;
+    if (this.blueness > 255) {this.blueness = 255}
 
     c.beginPath();
     c.fillStyle = "#ffffff";
-    c.fillStyle = 'rgba(255,' + this.redness + ',' + this.redness +',' + this.opacity + ')';
+    c.fillStyle = 'rgba(' + this.blueness + ',' + this.blueness +',' + '255, ' + this.opacity + ')';
 
     c.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
     c.fill();
@@ -326,6 +326,13 @@ function drawParticles(){
   }
 }
 
+function game(){
+  drawGameField();
+  c.font = "48px sans-serif";
+  c.fillStyle = "#d0d0d0";
+  c.fillText("press any key to start", leftMargin + 80, 300);
+
+}
 
 function animate(){
   clearTimeout(animate);
