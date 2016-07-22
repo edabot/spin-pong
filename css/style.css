@@ -1,5 +1,6 @@
 body {
   background-color: black;
+  cursor: none;
 }
 
 .canvas {
@@ -7,14 +8,6 @@ body {
   width: 900;
   height: 610;
 }
-/*
-h1 {
-  color: white;
-  font-family:'Verdana';
-  animation-duration: 3s;
-  animation-name: slidein;
-  animation-iteration-count: infinite;
-}*/
 
 @keyframes slidein {
   from {

@@ -4,12 +4,6 @@ var c = canvas.getContext('2d');
 
 var gameOn = false;
 
-// window.onload = function() {
-//     document.addEventListener('keydown', function(event) {
-//       keyDown();
-//     }, false);
-// }
-
 function keyDown() {
   if (gameOn = false) { gameOn = true }
 }
@@ -62,9 +56,9 @@ var ball = {
 }
 
 function resetBall(){
-  ball.x = leftMargin + 200;
+  ball.x = leftMargin + 600;
   ball.y = 350;
-  ball.dx = 3;
+  ball.dx = -4;
   ball.dy = Math.random() * 2 - 1;
   ball.ddy = 0;
 }
@@ -340,6 +334,7 @@ function drawParticles(){
 }
 
 function newGame(){
+  resetBall();
   drawGameField();
   c.font = "48px sans-serif";
   c.fillStyle = "#d0d0d0";
@@ -375,7 +370,7 @@ function gameOver(){
 
 function animate(){
   drawGameField();
-  mouseSpeed = mouse.y - lastMouseY;
+  mouseSpeed = 1.5 * (mouse.y - lastMouseY);
   addSpeed(mouseSpeed);
 
   paddleHit(currentSpeed(mouse.speeds));
@@ -397,33 +392,3 @@ function animate(){
 }
 
 newGame();
-// animate();
-//
-// var lastTime = null;
-//
-// animate = function(time){
-//   var timeDelta = time - lastTime;
-//   lastTime = time;
-//   clearTimeout(animate);
-//   setTimeout(animate, 10);
-//
-//   drawGameField();
-//
-//   mouseSpeed = mouse.y - lastMouseY;
-//   addSpeed(mouseSpeed);
-//
-//   paddleHit(currentSpeed(mouse.speeds));
-//   moveBall(ball);
-//   moveLeftPaddle(mouseSpeed);
-//   moveRightPaddle();
-//   addParticle();
-//   drawParticles();
-//   drawGamePieces();
-//
-//   lastMouseY = mouse.y;
-//   if (timeDelta > 10) {
-//     requestAnimationFrame(animate);
-//   }
-// };
-//
-// requestAnimationFrame(animate);
