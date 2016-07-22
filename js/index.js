@@ -93,25 +93,15 @@ function moveRightPaddle() {
 function paddleHit(mouseSpeed) {
   var hitSpot = 0;
   if (ball.x + ball.dx < leftMargin + 30 - ball.dx &&
-      ball.x + ball.dx > leftMargin + 20) {
-      hitSpot = ball.y - paddleLeft.y
-    if (hitSpot > -10 && hitSpot < 110) {
+    ball.x + ball.dx > leftMargin + 20) {
+    hitSpot = ball.y - paddleLeft.y - paddleHeight / 2
+    if (Math.abs(hitSpot) < 55) {
       ball.x = leftMargin + 40
       ball.dx = -ball.dx;
       ball.dx += .5
       if (mouseSpeed > 1 || mouseSpeed < -1 ) ball.ddy = -mouseSpeed / 1000;
+      ball.dy = (hitSpot / 80) * ball.dx;
     }
-    if (hitSpot > -9 && hitSpot <= 0) { ball.dy = -4}
-    if (hitSpot > 0 && hitSpot <= 11) { ball.dy = -3.5}
-    if (hitSpot > 11 && hitSpot <= 22) { ball.dy = -3}
-    if (hitSpot > 22 && hitSpot <= 33) { ball.dy = -2}
-    if (hitSpot > 33 && hitSpot <= 49) { ball.dy = -1}
-    if (hitSpot > 49 && hitSpot <= 51) { ball.dy = 0}
-    if (hitSpot > 51 && hitSpot <= 66) { ball.dy = 1}
-    if (hitSpot > 66 && hitSpot <= 77) { ball.dy = 2}
-    if (hitSpot > 77 && hitSpot <= 88) { ball.dy = 3}
-    if (hitSpot > 88 && hitSpot <= 100) { ball.dy = 3.5}
-    if (hitSpot > 100 && hitSpot < 59) { ball.dy = 4}
     if (ball.ddy > 0) { ball.dy = 0 }
   }
   if (ball.x + ball.dx > leftMargin + field.width - 30 - ball.dx  &&
