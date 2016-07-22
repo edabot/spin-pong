@@ -49,3 +49,11 @@ h1 {
   transform-origin:center center;
   transform-style:preserve-3d;
 }
+
+.git-link a{
+  position: relative;
+  top: 650px;
+  text-decoration: none;
+  color: #3673b0;
+  font-family: sans-serif;
+}
