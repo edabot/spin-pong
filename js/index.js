@@ -334,11 +334,13 @@ function newGame(){
   image.onload = function(){
        c.drawImage(image, leftMargin + 140, 120);
   }
+  document.addEventListener('keydown', startGame, false);
+}
 
-
-  document.addEventListener('keydown', function(event) {
-    animate();
-  }, false);
+function startGame(){
+  score.left = 0;
+  score.right = 0;
+  animate();
 }
 
 function gameOver(){
@@ -349,16 +351,12 @@ function gameOver(){
   if (score.right > score.left) { message = "you lost"}
   c.fillText(message, leftMargin + 280, 200);
   c.fillText("press any key to play again", leftMargin + 100, 330);
-  console.log(message);
-  document.addEventListener('keydown', function(event) {
-    score.left = 0;
-    score.right = 0;
-    animate();
-  }, false);
+  document.addEventListener('keydown', startGame, false);
 }
 
-
 function animate(){
+  document.removeEventListener('keydown', startGame, false);
+
   drawGameField();
   mouseSpeed = 1.5 * (mouse.y - lastMouseY);
   addSpeed(mouseSpeed);
