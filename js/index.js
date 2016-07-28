@@ -349,7 +349,7 @@ function gameOver(){
   c.fillStyle = "#d0d0d0";
   var message = "you win!"
   if (score.right > score.left) { message = "you lost"}
-  c.fillText(message, leftMargin + 280, 200);
+  c.fillText(message, leftMargin + 310, 200);
   c.fillText("click to play again", leftMargin + 200, 330);
   document.addEventListener('click', startGame, false);
 }
