@@ -328,13 +328,13 @@ function newGame(){
   drawGameField();
   c.font = "48px sans-serif";
   c.fillStyle = "#d0d0d0";
-  c.fillText("press any key to start", leftMargin + 160, 500);
+  c.fillText("click to start", leftMargin + 260, 500);
   var image = new Image();
   image.src = "./images/spin-pong-intro.png";
   image.onload = function(){
        c.drawImage(image, leftMargin + 140, 120);
   }
-  document.addEventListener('keydown', startGame, false);
+  document.addEventListener('click', startGame, false);
 }
 
 function startGame(){
@@ -350,12 +350,12 @@ function gameOver(){
   var message = "you win!"
   if (score.right > score.left) { message = "you lost"}
   c.fillText(message, leftMargin + 280, 200);
-  c.fillText("press any key to play again", leftMargin + 100, 330);
-  document.addEventListener('keydown', startGame, false);
+  c.fillText("click to play again", leftMargin + 200, 330);
+  document.addEventListener('click', startGame, false);
 }
 
 function animate(){
-  document.removeEventListener('keydown', startGame, false);
+  document.removeEventListener('click', startGame, false);
 
   drawGameField();
   mouseSpeed = 1.5 * (mouse.y - lastMouseY);
