@@ -2,7 +2,7 @@
 var canvas = document.querySelector("canvas");
 var c = canvas.getContext('2d');
 
-var particleGroupSize = 8;
+var particleGroupSize = 5;
 var mouseSpeed = 0;
 
 var field = {
@@ -193,7 +193,6 @@ function moveBall(ball) {
 
   // endzone hit
   if (ball.x + ball.dx < leftMargin + ball.radius - 50) {
-    console.log(ball.dx);
     resetBall();
     score.right += 1;
   }
@@ -234,15 +233,29 @@ function Particle(x, y, dx, dy, r, ddy) {
   this.dx = (Math.random() * 200 - 100) * Math.abs(ddy);
   this.dy = (Math.random() * 200 - 100) * Math.abs(ddy);
 
+  this.red = 255;
+  this.green = 255;
+  this.blue = 255;
+  if (Math.abs(dx) > 10) {
+    var speedFactor = Math.abs(dx) * 50;
+    this.red = 255 - Math.floor(Math.random() * speedFactor);
+    this.green = 255 - Math.floor(Math.random() * speedFactor);
+    this.blue = 255 - Math.floor(Math.random() * speedFactor);
+  }
+
   if (ddy !== 0){
     this.dx += dx;
     this.dy += dy;
+    this.blueness = 255 - Math.abs(ddy) * 10000;
+    if (this.blueness < 0) {this.blueness = 0}
+    this.red = this.blueness;
+    this.green = this.blueness;
+    this.blue = 255;
   }
+
   this.r = r;
   this.opacity = 1.5;
   this.timeLeft = 4;
-  this.blueness = 255 - Math.abs(ddy) * 10000;
-  if (this.blueness < 0) {this.blueness = 0}
 
   this.update = function() {
     if (this.y + this.dy < 100 || this.y + this.dy > 100 + field.height) {
@@ -256,17 +269,20 @@ function Particle(x, y, dx, dy, r, ddy) {
     this.r -= .07;
     this.opacity -= .04;
     this.timeLeft -= .1;
-    this.blueness += 25;
-    if (this.blueness > 255) {this.blueness = 255}
+
+    this.red += 22;
+    this.green += 22;
+    this.blue += 22;
+    if (this.blue > 255) {this.blue = 255}
+    if (this.red > 255) {this.red = 255}
+    if (this.green > 255) {this.green = 255}
 
     c.beginPath();
-    c.fillStyle = "#ffffff";
-    c.fillStyle = 'rgba(' + this.blueness + ',' + this.blueness +',' + '255, ' + this.opacity + ')';
+    c.fillStyle = 'rgba(' + this.red + ',' + this.green +',' + this.blue + ',' + this.opacity + ')';
 
     c.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
     c.fill();
     c.closePath();
-
   }
 
   this.remove = function() {
